@@ -51,6 +51,7 @@ public class GitLabPluginConfiguration {
     private final Settings settings;
     private final System2 system2;
     private final String baseUrl;
+    private final String baseWsUrl;
 
     public GitLabPluginConfiguration(Settings settings, System2 system2) {
         super();
@@ -59,13 +60,20 @@ public class GitLabPluginConfiguration {
         this.system2 = system2;
 
         String tempBaseUrl = settings.hasKey(CoreProperties.SERVER_BASE_URL) ? settings.getString(CoreProperties.SERVER_BASE_URL) : settings.getString("sonar.host.url");
+        this.baseUrl = sanitizeBaseUrl(tempBaseUrl);
+
+        String tempBaseWsUrl = settings.getString("sonar.host.url");
+        this.baseWsUrl = sanitizeBaseUrl(tempBaseWsUrl);
+    }
+
+    private static String sanitizeBaseUrl(String tempBaseUrl) {
         if (tempBaseUrl == null) {
-            tempBaseUrl = "http://localhost:9090";
+            tempBaseUrl = "http://localhost:9000";
         }
         if (!tempBaseUrl.endsWith("/")) {
             tempBaseUrl += "/";
         }
-        this.baseUrl = tempBaseUrl;
+        return tempBaseUrl;
     }
 
     public String projectId() {
@@ -259,7 +267,18 @@ public class GitLabPluginConfiguration {
         }
     }
 
+    /**
+     * The base URL for user-facing links (usually sonar.core.serverBaseURL, when defined in the
+     * SonarQube global configuration, or sonar.host.url otherwise).
+     */
     public String baseUrl() {
         return baseUrl;
+    }
+
+    /**
+     * The base URL for calling SonarQube web-services (usually sonar.host.url).
+     */
+    public String baseWsUrl() {
+        return baseWsUrl;
     }
 }

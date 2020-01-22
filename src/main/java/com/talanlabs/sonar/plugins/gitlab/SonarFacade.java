@@ -68,7 +68,7 @@ public class SonarFacade {
     public SonarFacade(Settings settings, GitLabPluginConfiguration gitLabPluginConfiguration) {
         this.gitLabPluginConfiguration = gitLabPluginConfiguration;
 
-        HttpConnector httpConnector = HttpConnector.newBuilder().url(gitLabPluginConfiguration.baseUrl())
+        HttpConnector httpConnector = HttpConnector.newBuilder().url(gitLabPluginConfiguration.baseWsUrl())
                 .credentials(settings.getString(CoreProperties.LOGIN), settings.getString(CoreProperties.PASSWORD)).build();
 
         wsClient = WsClientFactories.getDefault().newClient(httpConnector);
